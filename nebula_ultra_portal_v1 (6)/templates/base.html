@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="{{ session['lang'] }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ t['nav_home'] }} | Nebula Ultra</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="glass-nav">
+        <div class="logo">NEBULA_ULTRA</div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('index') }}">{{ t['nav_home'] }}</a></li>
+            <li><a href="{{ url_for('library') }}">{{ t['nav_library'] }}</a></li>
+            <li><a href="{{ url_for('leaderboard') }}">{{ t['nav_leaderboard'] }}</a></li>
+        </ul>
+        <div class="lang-switch">
+            <a href="{{ url_for('change_lang', lang='en') }}">EN</a> | 
+            <a href="{{ url_for('change_lang', lang='es') }}">ES</a>
+        </div>
+    </nav>
+    <div class="container">{% block content %}{% endblock %}</div>
+</body>
+</html>
