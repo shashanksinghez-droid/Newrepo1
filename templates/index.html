@@ -2,135 +2,193 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber City Runner</title>
+    <title>Azure Starfighter: Advanced Edition</title>
     <style>
-        body { margin: 0; background: #050505; color: #39ff14; font-family: 'Courier New', Courier, monospace; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
-        canvas { background: #000; border: 4px solid #39ff14; box-shadow: 0 0 20px #39ff14; cursor: none; }
-        .stats { margin-bottom: 10px; font-size: 24px; text-transform: uppercase; letter-spacing: 2px; }
-        .instructions { margin-top: 10px; color: #888; }
+        body { margin: 0; background: #020205; color: #4fc3f7; font-family: 'Segoe UI', Tahoma, sans-serif; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        #game-container { position: relative; border: 3px solid #1a237e; box-shadow: 0 0 30px #0d47a1; }
+        canvas { display: block; background: radial-gradient(circle, #0d1117 0%, #000 100%); }
+        .hud { position: absolute; top: 10px; left: 10px; pointer-events: none; }
+        .score-board { font-size: 24px; font-weight: bold; text-shadow: 0 0 10px #4fc3f7; }
     </style>
 </head>
 <body>
-    <div class="stats">Uptime: <span id="score">0</span>ms</div>
-    <canvas id="gameCanvas"></canvas>
-    <div class="instructions">PRESS [SPACE] OR CLICK TO JUMP OVER BREACHES</div>
+    <div id="game-container">
+        <div class="hud">
+            <div class="score-board">ENCRYPTED DATA: <span id="score">0</span> TB</div>
+            <div id="powerup-status" style="color: #ffeb3b; font-size: 14px;"></div>
+        </div>
+        <canvas id="gameCanvas"></canvas>
+    </div>
 
-    <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const scoreElement = document.getElementById('score');
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = 900;
+canvas.height = 600;
 
-        canvas.width = 800;
-        canvas.height = 400;
+// --- GAME STATE ---
+let score = 0;
+let frames = 0;
+let gameActive = true;
+let powerupTimer = 0;
 
-        // Game Constants
-        const GRAVITY = 0.6;
-        const JUMP_FORCE = -12;
-        const GROUND_Y = 350;
+// --- CLASSES ---
+class Player {
+    constructor() {
+        this.x = 50;
+        this.y = canvas.height / 2;
+        this.w = 40;
+        this.h = 30;
+        this.speed = 7;
+    }
+    draw() {
+        ctx.shadowBlur = 15; ctx.shadowColor = "#4fc3f7";
+        ctx.fillStyle = "#4fc3f7";
+        // Draw a futuristic ship shape
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(this.x + this.w, this.y + this.h/2);
+        ctx.lineTo(this.x, this.y + this.h);
+        ctx.lineTo(this.x + 10, this.y + this.h/2);
+        ctx.closePath();
+        ctx.fill();
+    }
+}
 
-        let score = 0;
-        let gameActive = true;
-        let speed = 5;
+class Projectile {
+    constructor(x, y) {
+        this.x = x; this.y = y;
+        this.radius = 3;
+        this.speed = 10;
+    }
+    draw() {
+        ctx.fillStyle = "#ffeb3b";
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    update() { this.x += this.speed; }
+}
 
-        const player = {
-            x: 100, y: GROUND_Y - 40, w: 30, h: 40,
-            dy: 0, grounded: false, color: '#39ff14'
-        };
+class Enemy {
+    constructor() {
+        this.x = canvas.width + 50;
+        this.y = Math.random() * (canvas.height - 40);
+        this.w = 30; this.h = 30;
+        this.speed = 3 + Math.random() * 3;
+        this.hp = 1;
+    }
+    draw() {
+        ctx.fillStyle = "#f44336";
+        ctx.shadowColor = "#f44336";
+        ctx.fillRect(this.x, this.y, this.w, this.h);
+    }
+    update() { this.x -= this.speed; }
+}
 
-        let obstacles = [];
+class Particle {
+    constructor(x, y, color) {
+        this.x = x; this.y = y; this.color = color;
+        this.velocity = { x: (Math.random() - 0.5) * 5, y: (Math.random() - 0.5) * 5 };
+        this.alpha = 1;
+    }
+    draw() {
+        ctx.globalAlpha = this.alpha;
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, 2, 2);
+        ctx.globalAlpha = 1;
+    }
+    update() {
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
+        this.alpha -= 0.02;
+    }
+}
 
-        // Input Handling
-        function jump() {
-            if (player.grounded && gameActive) {
-                player.dy = JUMP_FORCE;
-                player.grounded = false;
+// --- ARRAYS ---
+const player = new Player();
+const projectiles = [];
+const enemies = [];
+const particles = [];
+const stars = Array.from({length: 100}, () => ({
+    x: Math.random() * canvas.width, 
+    y: Math.random() * canvas.height, 
+    size: Math.random() * 2,
+    speed: 0.5 + Math.random() * 2
+}));
+
+// --- INPUTS ---
+const keys = {};
+window.onkeydown = (e) => keys[e.code] = true;
+window.onkeyup = (e) => keys[e.code] = false;
+
+function shoot() {
+    projectiles.push(new Projectile(player.x + player.w, player.y + player.h/2));
+}
+
+// --- ENGINE ---
+function animate() {
+    if (!gameActive) return;
+    requestAnimationFrame(animate);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 1. Draw Parallax Stars
+    stars.forEach(s => {
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(s.x, s.y, s.size, s.size);
+        s.x -= s.speed;
+        if (s.x < 0) s.x = canvas.width;
+    });
+
+    // 2. Handle Player Movement
+    if (keys['ArrowUp'] && player.y > 0) player.y -= player.speed;
+    if (keys['ArrowDown'] && player.y < canvas.height - player.h) player.y += player.speed;
+    player.draw();
+
+    // 3. Handle Projectiles
+    if (frames % 10 === 0 && (keys['Space'] || keys['KeyX'])) shoot();
+    projectiles.forEach((p, i) => {
+        p.update(); p.draw();
+        if (p.x > canvas.width) projectiles.splice(i, 1);
+    });
+
+    // 4. Handle Enemies
+    if (frames % 40 === 0) enemies.push(new Enemy());
+    enemies.forEach((e, ei) => {
+        e.update(); e.draw();
+        
+        // Collision: Enemy vs Player
+        if (player.x < e.x + e.w && player.x + player.w > e.x && player.y < e.y + e.h && player.y + player.h > e.y) {
+            gameActive = false;
+            alert("SYSTEM FAILURE! Final Score: " + score);
+            location.reload();
+        }
+
+        // Collision: Projectile vs Enemy
+        projectiles.forEach((p, pi) => {
+            if (p.x > e.x && p.x < e.x + e.w && p.y > e.y && p.y < e.y + e.h) {
+                // Create particles
+                for(let k=0; k<10; k++) particles.push(new Particle(e.x, e.y, "#f44336"));
+                enemies.splice(ei, 1);
+                projectiles.splice(pi, 1);
+                score += 10;
+                document.getElementById('score').innerText = score;
             }
-            if (!gameActive) location.reload();
-        }
+        });
 
-        window.addEventListener('keydown', (e) => { if (e.code === 'Space') jump(); });
-        canvas.addEventListener('mousedown', jump);
+        if (e.x + e.w < 0) enemies.splice(ei, 1);
+    });
 
-        function createObstacle() {
-            if (!gameActive) return;
-            const height = 30 + Math.random() * 50;
-            obstacles.push({ x: canvas.width, y: GROUND_Y - height, w: 20, h: height });
-            setTimeout(createObstacle, 1500 - (speed * 50));
-        }
+    // 5. Particles
+    particles.forEach((p, i) => {
+        if (p.alpha <= 0) particles.splice(i, 1);
+        else { p.update(); p.draw(); }
+    });
 
-        function update() {
-            if (!gameActive) return;
+    frames++;
+}
 
-            // Player Physics
-            player.dy += GRAVITY;
-            player.y += player.dy;
-
-            if (player.y + player.h > GROUND_Y) {
-                player.y = GROUND_Y - player.h;
-                player.dy = 0;
-                player.grounded = true;
-            }
-
-            // Move Obstacles
-            obstacles.forEach((obs, index) => {
-                obs.x -= speed;
-
-                // Collision Detection
-                if (player.x < obs.x + obs.w && player.x + player.w > obs.x &&
-                    player.y < obs.y + obs.h && player.y + player.h > obs.y) {
-                    gameActive = false;
-                }
-
-                if (obs.x + obs.w < 0) obstacles.splice(index, 1);
-            });
-
-            score++;
-            speed += 0.001; // Get faster over time
-            scoreElement.innerText = score;
-        }
-
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw Ground
-            ctx.strokeStyle = '#39ff14';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(0, GROUND_Y);
-            ctx.lineTo(canvas.width, GROUND_Y);
-            ctx.stroke();
-
-            // Draw Player (Neon Box)
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = player.color;
-            ctx.fillStyle = player.color;
-            ctx.fillRect(player.x, player.y, player.w, player.h);
-
-            // Draw Obstacles (Security Breaches)
-            ctx.shadowColor = '#ff003c';
-            ctx.fillStyle = '#ff003c';
-            obstacles.forEach(obs => {
-                ctx.fillRect(obs.x, obs.y, obs.w, obs.h);
-            });
-
-            if (!gameActive) {
-                ctx.shadowBlur = 0;
-                ctx.fillStyle = "rgba(0,0,0,0.7)";
-                ctx.fillRect(0,0, canvas.width, canvas.height);
-                ctx.fillStyle = "#ff003c";
-                ctx.font = "40px Courier New";
-                ctx.fillText("SYSTEM BREACHED", 230, 200);
-                ctx.font = "20px Courier New";
-                ctx.fillText("CLICK TO REBOOT", 310, 240);
-            }
-
-            update();
-            requestAnimationFrame(draw);
-        }
-
-        createObstacle();
-        draw();
-    </script>
+animate();
+</script>
 </body>
 </html>
