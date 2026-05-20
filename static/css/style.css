@@ -1,0 +1,5 @@
+body { margin: 0; background: #00050a; overflow: hidden; font-family: 'Courier New', monospace; }
+#gameCanvas { display: block; width: 100vw; height: 100vh; }
+#ui { position: absolute; top: 30px; left: 30px; color: #00ffff; text-shadow: 0 0 15px #00ffff; z-index: 10; pointer-events: none; }
+#score { font-size: 32px; font-weight: bold; letter-spacing: 3px; }
+#hint { font-size: 14px; opacity: 0.6; margin-top: 5px; color: #ff00ff; text-shadow: 0 0 10px #ff00ff; }
