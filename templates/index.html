@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber City Runner</title>
+    <style>
+        body { margin: 0; background: #050505; color: #39ff14; font-family: 'Courier New', Courier, monospace; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+        canvas { background: #000; border: 4px solid #39ff14; box-shadow: 0 0 20px #39ff14; cursor: none; }
+        .stats { margin-bottom: 10px; font-size: 24px; text-transform: uppercase; letter-spacing: 2px; }
+        .instructions { margin-top: 10px; color: #888; }
+    </style>
+</head>
+<body>
+    <div class="stats">Uptime: <span id="score">0</span>ms</div>
+    <canvas id="gameCanvas"></canvas>
+    <div class="instructions">PRESS [SPACE] OR CLICK TO JUMP OVER BREACHES</div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+
+        canvas.width = 800;
+        canvas.height = 400;
+
+        // Game Constants
+        const GRAVITY = 0.6;
+        const JUMP_FORCE = -12;
+        const GROUND_Y = 350;
+
+        let score = 0;
+        let gameActive = true;
+        let speed = 5;
+
+        const player = {
+            x: 100, y: GROUND_Y - 40, w: 30, h: 40,
+            dy: 0, grounded: false, color: '#39ff14'
+        };
+
+        let obstacles = [];
+
+        // Input Handling
+        function jump() {
+            if (player.grounded && gameActive) {
+                player.dy = JUMP_FORCE;
+                player.grounded = false;
+            }
+            if (!gameActive) location.reload();
+        }
+
+        window.addEventListener('keydown', (e) => { if (e.code === 'Space') jump(); });
+        canvas.addEventListener('mousedown', jump);
+
+        function createObstacle() {
+            if (!gameActive) return;
+            const height = 30 + Math.random() * 50;
+            obstacles.push({ x: canvas.width, y: GROUND_Y - height, w: 20, h: height });
+            setTimeout(createObstacle, 1500 - (speed * 50));
+        }
+
+        function update() {
+            if (!gameActive) return;
+
+            // Player Physics
+            player.dy += GRAVITY;
+            player.y += player.dy;
+
+            if (player.y + player.h > GROUND_Y) {
+                player.y = GROUND_Y - player.h;
+                player.dy = 0;
+                player.grounded = true;
+            }
+
+            // Move Obstacles
+            obstacles.forEach((obs, index) => {
+                obs.x -= speed;
+
+                // Collision Detection
+                if (player.x < obs.x + obs.w && player.x + player.w > obs.x &&
+                    player.y < obs.y + obs.h && player.y + player.h > obs.y) {
+                    gameActive = false;
+                }
+
+                if (obs.x + obs.w < 0) obstacles.splice(index, 1);
+            });
+
+            score++;
+            speed += 0.001; // Get faster over time
+            scoreElement.innerText = score;
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Ground
+            ctx.strokeStyle = '#39ff14';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, GROUND_Y);
+            ctx.lineTo(canvas.width, GROUND_Y);
+            ctx.stroke();
+
+            // Draw Player (Neon Box)
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = player.color;
+            ctx.fillStyle = player.color;
+            ctx.fillRect(player.x, player.y, player.w, player.h);
+
+            // Draw Obstacles (Security Breaches)
+            ctx.shadowColor = '#ff003c';
+            ctx.fillStyle = '#ff003c';
+            obstacles.forEach(obs => {
+                ctx.fillRect(obs.x, obs.y, obs.w, obs.h);
+            });
+
+            if (!gameActive) {
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = "rgba(0,0,0,0.7)";
+                ctx.fillRect(0,0, canvas.width, canvas.height);
+                ctx.fillStyle = "#ff003c";
+                ctx.font = "40px Courier New";
+                ctx.fillText("SYSTEM BREACHED", 230, 200);
+                ctx.font = "20px Courier New";
+                ctx.fillText("CLICK TO REBOOT", 310, 240);
+            }
+
+            update();
+            requestAnimationFrame(draw);
+        }
+
+        createObstacle();
+        draw();
+    </script>
+</body>
+</html>
