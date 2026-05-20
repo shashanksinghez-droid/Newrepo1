@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEON PROTOCOL // BREACH</title>
+    <title>NEON RIDER // PRO</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <div id="ui">
-        <div id="score">UPTIME: 000000</div>
-        <div id="hint">DODGE SYSTEM ERRORS: [A][D] or ARROWS</div>
+        <div id="speed">0 KM/H</div>
+        <div id="distance">DIST: 0.00 KM</div>
+        <div id="controls">STEER: [A][D] | ACCEL: [W]</div>
     </div>
     <canvas id="gameCanvas"></canvas>
     <script src="{{ url_for('static', filename='js/engine.js') }}"></script>
