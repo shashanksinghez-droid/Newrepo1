@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="hero">
+    <h1>{{ t['hero_title'] }}</h1>
+    <p>{{ t['hero_sub'] }}</p>
+    <a href="{{ url_for('library') }}" class="btn-primary">{{ t['btn_play'] }}</a>
+</div>
+{% endblock %}

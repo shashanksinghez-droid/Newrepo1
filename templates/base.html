@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Nebula Ultra</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">NEBULA_ULTRA</div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('index') }}">{{ t['nav_home'] }}</a></li>
+            <li><a href="{{ url_for('library') }}">{{ t['nav_library'] }}</a></li>
+            <li><a href="{{ url_for('rankings') }}">{{ t['nav_rank'] }}</a></li>
+        </ul>
+        <div class="lang-nav">
+            <a href="{{ url_for('set_language', lang_code='en') }}">EN</a>
+            <a href="{{ url_for('set_language', lang_code='es') }}">ES</a>
+            <a href="{{ url_for('set_language', lang_code='hi') }}">HI</a>
+        </div>
+    </nav>
+    <div class="main-content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

@@ -1,1 +1,0 @@
-{% extends 'base.html' %}{% block content %}<h2>GLOBAL RANKINGS</h2><table><tr><th>Player</th><th>Score</th><th>Game</th></tr>{% for s in scores %}<tr><td>{{ s.name }}</td><td>{{ s.score }}</td><td>{{ s.game }}</td></tr>{% endfor %}</table>{% endblock %}

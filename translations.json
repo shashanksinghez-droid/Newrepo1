@@ -1,0 +1,29 @@
+{
+    "en": {
+        "nav_home": "HOME",
+        "nav_library": "GAMES",
+        "nav_rank": "RANKINGS",
+        "hero_title": "NEBULA ULTRA",
+        "hero_sub": "The Next Generation of Web Gaming.",
+        "btn_play": "PLAY NOW",
+        "title_featured": "FEATURED MISSIONS"
+    },
+    "es": {
+        "nav_home": "INICIO",
+        "nav_library": "JUEGOS",
+        "nav_rank": "RANKINGS",
+        "hero_title": "EL NEBULA ULTRA",
+        "hero_sub": "La próxima generación de juegos web.",
+        "btn_play": "JUGAR AHORA",
+        "title_featured": "MISIONES DESTACADAS"
+    },
+    "hi": {
+        "nav_home": "होम",
+        "nav_library": "गेम्स",
+        "nav_rank": "रैंकिंग",
+        "hero_title": "नेबुला अल्ट्रा",
+        "hero_sub": "वेब गेमिंग की अगली पीढ़ी।",
+        "btn_play": "अभी खेलें",
+        "title_featured": "विशेष मिशन"
+    }
+}
