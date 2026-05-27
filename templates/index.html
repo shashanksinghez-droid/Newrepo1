@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Varanasi - The Eternal City</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #fffcf5; }
+        .header { background: #d35400; color: white; padding: 40px; text-align: center; }
+        .container { max-width: 900px; margin: 30px auto; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-top: 5px solid #d35400; }
+        .card h3 { margin-top: 0; color: #d35400; }
+        a { text-decoration: none; color: #d35400; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Varanasi (Kashi)</h1>
+        <p>The Spiritual Capital of India</p>
+    </div>
+    <div class="container">
+        <h2>Explore Places</h2>
+        <div class="grid">
+            {% for id, details in places.items() %}
+            <div class="card">
+                <h3>{{ details.title }}</h3>
+                <p>{{ details.description }}</p>
+                <a href="/place/{{ id }}">Read Full Info &rarr;</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
