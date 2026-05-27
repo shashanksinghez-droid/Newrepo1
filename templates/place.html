@@ -2,18 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ place.title }} - Details</title>
+    <title>{{ place.title }} - Detailed Guide</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; line-height: 1.8; color: #333; background: #fff; padding: 40px; }
+        body { font-family: 'Segoe UI', sans-serif; line-height: 1.8; color: #333; background: #fff; padding: 50px 20px; }
         .container { max-width: 800px; margin: auto; }
-        .back-link { margin-bottom: 20px; display: inline-block; color: #d35400; font-weight: bold; }
-        h1 { color: #d35400; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .highlight-box { background: #fdf2e9; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 5px solid #d35400; }
+        .back-link { margin-bottom: 30px; display: inline-block; color: #1a5276; font-weight: bold; text-decoration: none; }
+        h1 { color: #1a5276; border-bottom: 3px solid #1a5276; padding-bottom: 10px; margin-top: 0; }
+        .highlight-box { background: #ebf5fb; padding: 25px; border-radius: 8px; margin: 30px 0; border-left: 6px solid #1a5276; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 10px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <a href="/" class="back-link">&larr; Back to Home</a>
+        <a href="/" class="back-link">&larr; Return to Home</a>
         <h1>{{ place.title }}</h1>
         <p>{{ place.full_text }}</p>
         
@@ -21,7 +23,7 @@
             <h3>Key Highlights:</h3>
             <ul>
                 {% for h in place.highlights %}
-                <li>{{ h }}</li>
+                <li><strong>{{ h }}</strong></li>
                 {% endfor %}
             </ul>
         </div>
