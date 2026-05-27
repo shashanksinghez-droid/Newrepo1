@@ -1,35 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Delhi: The Heart of India</title>
+    <title>Delhi Tourism</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #fdfbf7; color: #2c3e50; }
-        .header { background: #1a5276; color: white; padding: 60px 20px; text-align: center; }
-        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-top: 6px solid #1a5276; transition: 0.3s; }
-        .card:hover { transform: translateY(-5px); }
-        .card h3 { margin-top: 0; color: #1a5276; }
-        a { text-decoration: none; color: #1a5276; font-weight: bold; }
-        .btn { display: inline-block; margin-top: 15px; padding: 8px 16px; background: #1a5276; color: white; border-radius: 4px; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 40px; background: #fdf6e3; color: #657b83; }
+        .card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #b58900; }
+        h1 { color: #cb4b16; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Discover Delhi</h1>
-        <p>A City of History, Culture, and Modernity</p>
+    <h1>Welcome to Delhi</h1>
+    {% for id, place in places.items() %}
+    <div class="card">
+        <h2>{{ place.name }}</h2>
+        <p>{{ place.info }}</p>
+        <strong>Fact:</strong> {{ place.fact }}
     </div>
-    <div class="container">
-        <div class="grid">
-            {% for id, details in places.items() %}
-            <div class="card">
-                <h3>{{ details.title }}</h3>
-                <p>{{ details.description }}</p>
-                <a href="/place/{{ id }}" class="btn">Explore {{ details.title }}</a>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
+    {% endfor %}
 </body>
 </html>
