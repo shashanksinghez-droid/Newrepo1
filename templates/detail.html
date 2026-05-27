@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ temple.name }} - Varanasi</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #fff; line-height: 1.6; }
+        .nav { background: #d35400; padding: 1rem; }
+        .nav a { color: white; text-decoration: none; font-weight: bold; }
+        .header-img { width: 100%; height: 50vh; object-fit: cover; }
+        .content { max-width: 800px; margin: -50px auto 50px; background: white; padding: 3rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; }
+        h1 { color: #d35400; font-size: 2.5rem; }
+        .meta-box { background: #fdf2e9; border-left: 5px solid #d35400; padding: 1.5rem; margin: 2rem 0; }
+        .back-link { display: block; margin-top: 2rem; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+    <div class="nav"><a href="/">← Back to Home</a></div>
+    <img src="{{ temple.img_url }}" class="header-img">
+    <div class="content">
+        <h1>{{ temple.name }}</h1>
+        <p class="intro"><strong>Overview:</strong> {{ temple.desc }}</p>
+        
+        <div class="meta-box">
+            <h3>Key Highlight</h3>
+            <p>{{ temple.highlight }}</p>
+        </div>
+
+        <h3>History & Significance</h3>
+        <p>{{ temple.history }}</p>
+
+        <a href="/" class="back-link">Return to all temples</a>
+    </div>
+</body>
+</html>
