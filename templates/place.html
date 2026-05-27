@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h1 class="section-title" style="color: #e67e22;">{{ place.name }}</h1>
+    <p style="font-size: 1.3rem; font-style: italic;">{{ place.tagline }}</p>
+    <hr>
+    
+    <h2>Historical Background</h2>
+    <p>{{ place.history }}</p>
+
+    <div class="highlight-box">
+        <h3>Why it is Sacred</h3>
+        <p>{{ place.significance }}</p>
+    </div>
+
+    <h2>Key Highlights for Visitors</h2>
+    <ul>
+        {% for highlight in place.highlights %}
+        <li style="margin-bottom: 12px; font-weight: 500;">{{ highlight }}</li>
+        {% endfor %}
+    </ul>
+
+    <div style="margin-top: 40px;">
+        <a href="/" style="color: #8e44ad; font-weight: bold; text-decoration: none;">&larr; Back to Home</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varanasi - The Eternal City</title>
+    <style>
+        body { font-family: 'Georgia', serif; line-height: 1.6; margin: 0; background: #fafafa; color: #333; }
+        nav { background: #8e44ad; color: white; padding: 1.5rem; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        nav a { color: white; text-decoration: none; margin: 0 20px; font-weight: bold; font-size: 1.1rem; }
+        nav a:hover { text-decoration: underline; }
+        .hero { background: #2c3e50; color: white; padding: 60px 20px; text-align: center; }
+        .hero h1 { font-size: 3.5rem; margin-bottom: 10px; }
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 6px 15px rgba(0,0,0,0.05); border-top: 5px solid #e67e22; }
+        .card h2 { color: #e67e22; margin-top: 0; }
+        .btn { display: inline-block; background: #e67e22; color: white; padding: 10px 22px; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 15px; }
+        .footer { background: #34495e; color: #ecf0f1; text-align: center; padding: 30px; margin-top: 60px; }
+        .section-title { border-left: 8px solid #8e44ad; padding-left: 15px; color: #2c3e50; }
+        .highlight-box { background: #fdf2e9; padding: 20px; border-radius: 10px; border: 1px dashed #e67e22; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/">HOME</a>
+        <a href="/history">HISTORY OF KASHI</a>
+    </nav>
+    {% block content %}{% endblock %}
+    <div class="footer">
+        <p>&copy; 2024 Varanasi Tourism Portal | "Kashi Kabhu Na Chhodiye"</p>
+    </div>
+</body>
+</html>

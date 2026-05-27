@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="hero">
+    <h1>Varanasi</h1>
+    <p>The Oldest Living City in the World</p>
+</div>
+<div class="container">
+    <h2 class="section-title">Explore the Sacred Places</h2>
+    <p>Welcome to the spiritual capital of India. Each street here has a story, and each ghat has a legend. Click below to explore the detailed history and significance of each location.</p>
+    <div class="grid">
+        {% for id, place in places.items() %}
+        <div class="card">
+            <h2>{{ place.name }}</h2>
+            <p><em>{{ place.tagline }}</em></p>
+            <p>{{ place.history[:150] }}...</p>
+            <a href="/place/{{ id }}" class="btn">Full Guide</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
